@@ -12,7 +12,7 @@
     <packaging>hpi</packaging>
     <name>Hudson cross-platform shell plugin</name>
     <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
-    <url>http://wiki.hudson-ci.org/display/HUDSON/CrossPlatform+Shell+Plugin</url>
+    <url>http://wiki.hudson-ci.org/display/HUDSON/XShell+Plugin</url>
 
     <developers>
         <developer>
