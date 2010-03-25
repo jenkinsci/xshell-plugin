@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jvnet.hudson.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.347</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>xshell</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>hpi</packaging>
+    <name>Hudson cross-platform shell plugin</name>
+    <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
+    <url>http://wiki.hudson-ci.org/display/HUDSON/CrossPlatform+Shell+Plugin</url>
+
+    <developers>
+        <developer>
+            <id>mambu</id>
+            <name>Marco Ambu</name>
+            <email>marco.ambu@gmail.com</email>
+        </developer>
+    </developers>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+</project>
