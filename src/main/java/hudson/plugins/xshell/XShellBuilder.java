@@ -29,20 +29,30 @@ public final class XShellBuilder extends Builder {
   /**
    * Set to true for debugging.
    */
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
   /**
-   * Script home dir.
+   * Command line.
    */
-  private final String script;
+  private final String commandLine;
 
-  public String getScript() {
-      return script;
+  /**
+   * Specify if command is executed from working dir.
+   */
+  private final Boolean executeFromWorkingDir;
+
+  public String getCommandLine() {
+    return commandLine;
+  }
+
+  public Boolean getExecuteFromWorkingDir() {
+    return executeFromWorkingDir;
   }
 
   @DataBoundConstructor
-  public XShellBuilder(final String script) {
-    this.script = Util.fixEmptyAndTrim(script);
+  public XShellBuilder(final String commandLine, final Boolean executeFromWorkingDir) {
+    this.commandLine = Util.fixEmptyAndTrim(commandLine);
+    this.executeFromWorkingDir = executeFromWorkingDir;
   }
 
   @Override
@@ -56,8 +66,8 @@ public final class XShellBuilder extends Builder {
 
     ArgumentListBuilder args = new ArgumentListBuilder();
     final EnvVars env = build.getEnvironment(listener);
-    if (script != null) {
-      args.addTokenized(script);
+    if (commandLine != null) {
+      args.addTokenized((launcher.isUnix() && executeFromWorkingDir) ? "./" + commandLine : commandLine);
     }
 
     if (!launcher.isUnix()) {
@@ -74,13 +84,13 @@ public final class XShellBuilder extends Builder {
       logger.println("Working dir: " + build.getModuleRoot());
     }
 
-    final long startTime = System.currentTimeMillis();
+    //final long startTime = System.currentTimeMillis();
     try {
       final int result = launcher.launch().cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot())/*.pwd(phpFilePath.getParent())*/.join();
       return result == 0;
     } catch (final IOException e) {
       Util.displayIOException(e, listener);
-      final long processingTime = System.currentTimeMillis() - startTime;
+      //final long processingTime = System.currentTimeMillis() - startTime;
       final String errorMessage = Messages.XShell_ExecFailed();
       e.printStackTrace(listener.fatalError(errorMessage));
       return false;
