@@ -14,6 +14,7 @@ import hudson.model.Descriptor;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
 
+import java.io.File;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -64,10 +65,12 @@ public final class XShellBuilder extends Builder {
   public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
           throws InterruptedException, IOException {
 
+    String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
+
     ArgumentListBuilder args = new ArgumentListBuilder();
     final EnvVars env = build.getEnvironment(listener);
-    if (commandLine != null) {
-      args.addTokenized((launcher.isUnix() && executeFromWorkingDir) ? "./" + commandLine : commandLine);
+    if (cmdLine != null) {
+      args.addTokenized((launcher.isUnix() && executeFromWorkingDir) ? "./" + cmdLine : cmdLine);
     }
 
     if (!launcher.isUnix()) {
