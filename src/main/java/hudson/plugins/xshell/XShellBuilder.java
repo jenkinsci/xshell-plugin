@@ -65,7 +65,9 @@ public final class XShellBuilder extends Builder {
   public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
           throws InterruptedException, IOException {
 
-    String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
+    // Not sure if File.separator is right if executing on slave with OS different from master's one
+    //String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
+    String cmdLine = commandLine.replaceAll("[/\\\\]", launcher.isUnix() ? "/" : "\\");
 
     ArgumentListBuilder args = new ArgumentListBuilder();
     final EnvVars env = build.getEnvironment(listener);
