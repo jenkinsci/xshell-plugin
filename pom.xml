@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>xshell</artifactId>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>Hudson cross-platform shell plugin</name>
     <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
@@ -25,10 +25,4 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-  <scm>
-    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/xshell-0.4</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/xshell-0.4</developerConnection>
-    <url>https://hudson.dev.java.net/source/browse/hudson/tags/xshell-0.4</url>
-  </scm>
 </project>
