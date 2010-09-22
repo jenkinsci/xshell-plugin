@@ -1,5 +1,18 @@
 <div>
   <p>
-Specify your command line here.
+Specify your command line here.<br/>
+You can use your preferred path separator: every path separator will be translated to the right one according to the operating system of the executor.<br/>
+  </p>
+  <p>
+Samples:
+    <dl>
+      <dt>myscript</dt>
+        <dd>executes <tt>myscript</tt> command. Command must be in PATH.
+          If the checkbox below is checked, then myscript will be executed from workspace dir.</dd>
+      <dt>subdir/myscript tests/test1.txt</dt>
+      <dd>executes <tt>myscript</tt> file from workspace's subfolder <tt>subdir</tt>. This command is equivalent to <tt>subdir\myscript tests\test1.txt</tt>.</dd>
+      <dt>java -jar myfolder/myscript.jar</dt>
+      <dd>executes the global command <tt>java</tt> with the specified parameters.</dd>
+    </dl>
   </p>
 </div>

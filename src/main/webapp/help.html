@@ -1,4 +1,13 @@
 <div>
-  Run a cross platform Shell script.<br />
-  It chooses the right shell depending on the execution operating system.
+  <p>
+    Run a cross platform Shell command.<br />
+    It chooses the right shell depending on the real operating system running during execution and performs file path separator translation.</br>
+  </p>
+  <p>
+    Constraints:
+    <ul>
+      <li>The working dir of the program executed is always the job's workspace.</li>
+      <li>If the script is in the workspace dir, do not include <tt>./</tt> as in Unix.</li>
+    </ul>
+  </p>
 </div>
