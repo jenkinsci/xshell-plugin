@@ -31,7 +31,7 @@ public final class XShellBuilder extends Builder {
   /**
    * Set to true for debugging.
    */
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
   /**
    * Command line.
