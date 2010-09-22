@@ -14,7 +14,8 @@ import hudson.model.Descriptor;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
 
-import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -67,7 +68,9 @@ public final class XShellBuilder extends Builder {
 
     // Not sure if File.separator is right if executing on slave with OS different from master's one
     //String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
-    String cmdLine = commandLine.replaceAll("[/\\\\]", launcher.isUnix() ? "/" : "\\");
+    String pattern = "[/" + Pattern.quote("\\") + "]";
+    String matcher = Matcher.quoteReplacement((launcher.isUnix() ? "/" : "\\"));
+    String cmdLine = commandLine.replaceAll(pattern, matcher);
 
     ArgumentListBuilder args = new ArgumentListBuilder();
     final EnvVars env = build.getEnvironment(listener);
@@ -91,7 +94,8 @@ public final class XShellBuilder extends Builder {
 
     //final long startTime = System.currentTimeMillis();
     try {
-      final int result = launcher.launch().cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot())/*.pwd(phpFilePath.getParent())*/.join();
+      final int result = launcher.decorateFor(build.getBuiltOn()).launch()
+              .cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot()).join();
       return result == 0;
     } catch (final IOException e) {
       Util.displayIOException(e, listener);
