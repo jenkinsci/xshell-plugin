@@ -31,7 +31,7 @@ public final class XShellBuilder extends Builder {
   /**
    * Set to true for debugging.
    */
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = true;
 
   /**
    * Command line.
@@ -73,7 +73,6 @@ public final class XShellBuilder extends Builder {
     String cmdLine = commandLine.replaceAll(pattern, matcher);
 
     ArgumentListBuilder args = new ArgumentListBuilder();
-    final EnvVars env = build.getEnvironment(listener);
     if (cmdLine != null) {
       args.addTokenized((launcher.isUnix() && executeFromWorkingDir) ? "./" + cmdLine : cmdLine);
     }
@@ -82,6 +81,9 @@ public final class XShellBuilder extends Builder {
       args.add("&&", "exit", "%%ERRORLEVEL%%");
       args = new ArgumentListBuilder().add("cmd.exe", "/C").addQuoted(args.toStringWithQuote());
     }
+
+    EnvVars env = build.getEnvironment(listener);
+    env.putAll(build.getBuildVariables());
 
     if (DEBUG) {
       final PrintStream logger = listener.getLogger();
@@ -92,14 +94,12 @@ public final class XShellBuilder extends Builder {
       logger.println("Working dir: " + build.getModuleRoot());
     }
 
-    //final long startTime = System.currentTimeMillis();
     try {
       final int result = launcher.decorateFor(build.getBuiltOn()).launch()
               .cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot()).join();
       return result == 0;
     } catch (final IOException e) {
       Util.displayIOException(e, listener);
-      //final long processingTime = System.currentTimeMillis() - startTime;
       final String errorMessage = Messages.XShell_ExecFailed();
       e.printStackTrace(listener.fatalError(errorMessage));
       return false;
