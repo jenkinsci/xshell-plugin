@@ -78,8 +78,7 @@ public final class XShellBuilder extends Builder {
     }
 
     if (!launcher.isUnix()) {
-      args.add("&&", "exit", "%%ERRORLEVEL%%");
-      args = new ArgumentListBuilder().add("cmd.exe", "/C").addQuoted(args.toStringWithQuote());
+      args = args.toWindowsCommand();
     }
 
     EnvVars env = build.getEnvironment(listener);
