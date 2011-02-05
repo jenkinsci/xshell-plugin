@@ -7,7 +7,7 @@
     </parent>
 
     <artifactId>xshell</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.5</version>
     <packaging>hpi</packaging>
     <name>Jenkins cross-platform shell plugin</name>
     <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
