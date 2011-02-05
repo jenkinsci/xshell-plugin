@@ -3,26 +3,41 @@
     <parent>
         <groupId>org.jvnet.hudson.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.386</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.394</version>
     </parent>
 
     <artifactId>xshell</artifactId>
     <version>0.5-SNAPSHOT</version>
     <packaging>hpi</packaging>
-    <name>Hudson cross-platform shell plugin</name>
+    <name>Jenkins cross-platform shell plugin</name>
     <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
-    <url>http://wiki.hudson-ci.org/display/HUDSON/XShell+Plugin</url>
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/XShell+Plugin</url>
+
+  <licenses>
+    <license>
+      <name>MIT license</name>
+      <comments>All source code is under the MIT license.</comments>
+    </license>
+  </licenses>
+
+  <distributionManagement>
+    <repository>
+      <id>maven.jenkins-ci.org</id>
+      <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+    </repository>
+  </distributionManagement>
 
     <developers>
         <developer>
             <id>mambu</id>
             <name>Marco Ambu</name>
-            <email>mambu@dev.java.net</email>
+            <email>marco.ambu@gmail.com</email>
         </developer>
     </developers>
     
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <scm>
+    <connection>scm:git:git://github.com/jenkinsci/xshell-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/xshell-plugin.git</developerConnection>
+    <url>http://github.com/jenkinsci/xshell-plugin</url>
+  </scm>
 </project>
