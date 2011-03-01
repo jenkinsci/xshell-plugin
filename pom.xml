@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jvnet.hudson.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.394</version>
+        <version>1.397</version>
     </parent>
 
     <artifactId>xshell</artifactId>
@@ -38,6 +38,6 @@
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/xshell-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/xshell-plugin.git</developerConnection>
-    <url>http://github.com/jenkinsci/xshell-plugin</url>
+    <url>https://github.com/jenkinsci/xshell-plugin</url>
   </scm>
 </project>
