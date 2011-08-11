@@ -24,6 +24,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Marco Ambu
  */
 public final class XShellBuilder extends Builder {
+  private static final Pattern WIN_ENV_VAR_REGEX = Pattern.compile("%(\\S+?)%");
+  private static final Pattern UNIX_ENV_VAR_REGEX = Pattern.compile("\\$(\\S+)");
 
   @Extension
   public static final XShellDescriptor DESCRIPTOR = new XShellDescriptor();
@@ -72,6 +74,12 @@ public final class XShellBuilder extends Builder {
     String matcher = Matcher.quoteReplacement((launcher.isUnix() ? "/" : "\\"));
     String cmdLine = commandLine.replaceAll(pattern, matcher);
 
+    if (launcher.isUnix()) {
+      cmdLine = convertEnvVarsToUnix(cmdLine);
+    } else {
+      cmdLine = convertEnvVarsToWindows(cmdLine);
+    }
+
     ArgumentListBuilder args = new ArgumentListBuilder();
     if (cmdLine != null) {
       args.addTokenized((launcher.isUnix() && executeFromWorkingDir) ? "./" + cmdLine : cmdLine);
@@ -105,4 +113,49 @@ public final class XShellBuilder extends Builder {
     }
   }
 
+  /**
+   * Convert Windows-style environment variables to UNIX-style.
+   * E.g. "script --opt=%OPT%" to "script --opt=$OPT"
+   *
+   * @param cmdLine The command line with Windows-style env vars to convert.
+   * @return The command line with UNIX-style env vars.
+   */
+  private String convertEnvVarsToUnix(String cmdLine) {
+    if (cmdLine == null) {
+      return null;
+    }
+
+    StringBuffer sb = new StringBuffer();
+
+    Matcher m = WIN_ENV_VAR_REGEX.matcher(cmdLine);
+    while (m.find()) {
+      m.appendReplacement(sb, "\\$$1");
+    }
+    m.appendTail(sb);
+
+    return sb.toString();
+  }
+
+  /**
+   * Convert UNIX-style environment variables to Windows-style.
+   * E.g. "script --opt=$OPT" to "script --opt=%OPT%"
+   *
+   * @param cmdLine The command line with Windows-style env vars to convert.
+   * @return The command line with UNIX-style env vars.
+   */
+  private String convertEnvVarsToWindows(String cmdLine) {
+    if (cmdLine == null) {
+      return null;
+    }
+
+    StringBuffer sb = new StringBuffer();
+
+    Matcher m = UNIX_ENV_VAR_REGEX.matcher(cmdLine);
+    while (m.find()) {
+      m.appendReplacement(sb, "%$1%");
+    }
+    m.appendTail(sb);
+
+    return sb.toString();
+  }
 }
