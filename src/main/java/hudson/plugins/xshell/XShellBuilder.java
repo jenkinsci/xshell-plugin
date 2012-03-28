@@ -69,7 +69,7 @@ public final class XShellBuilder extends Builder {
           throws InterruptedException, IOException {
 
     String match = "[/" + Pattern.quote("\\") + "]";
-    String replacement = Matcher.quoteReplacement("\\");
+    String replacement = Matcher.quoteReplacement((launcher.isUnix() ? "/" : "\\"));
 
     Pattern words = Pattern.compile("\\S+");
     Pattern urls = Pattern.compile("(https*|ftp):");
