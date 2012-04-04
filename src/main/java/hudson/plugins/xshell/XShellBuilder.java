@@ -69,14 +69,26 @@ public final class XShellBuilder extends Builder {
 
     LOG.log(Level.FINE, "Unmodified command line: " + commandLine);
 
-    // Not sure if File.separator is right if executing on slave with OS different from master's one
-    //String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
-    String pattern = "[/" + Pattern.quote("\\") + "]";
-    String matcher = Matcher.quoteReplacement((launcher.isUnix() ? "/" : "\\"));
-    String cmdLine = commandLine.replaceAll(pattern, matcher);
+    String match = "[/" + Pattern.quote("\\") + "]";
+    String replacement = Matcher.quoteReplacement((launcher.isUnix() ? "/" : "\\"));
 
+    Pattern words = Pattern.compile("\\S+");
+    Pattern urls = Pattern.compile("(https*|ftp):");
+    StringBuffer sb = new StringBuffer();
+    Matcher m = words.matcher(commandLine);
+    while (m.find()) {
+      String item = m.group();
+      if (!urls.matcher(item).find()) {
+        // Not sure if File.separator is right if executing on slave with OS different from master's one
+        //String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
+        m.appendReplacement(sb, Matcher.quoteReplacement(item.replaceAll(match, replacement)));
+      }
+    }
+    m.appendTail(sb);
+
+    String cmdLine = sb.toString();
     LOG.log(Level.FINE, "File separators sanitized: " + cmdLine);
-
+      
     if (launcher.isUnix()) {
       cmdLine = convertEnvVarsToUnix(cmdLine);
     } else {
