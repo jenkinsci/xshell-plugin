@@ -14,6 +14,8 @@ import hudson.model.Descriptor;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -24,16 +26,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Marco Ambu
  */
 public final class XShellBuilder extends Builder {
+
+  private static final Logger LOG = Logger.getLogger(XShellBuilder.class.getName());
   private static final Pattern WIN_ENV_VAR_REGEX = Pattern.compile("%(\\S+?)%");
   private static final Pattern UNIX_ENV_VAR_REGEX = Pattern.compile("\\$(\\S+)");
 
   @Extension
   public static final XShellDescriptor DESCRIPTOR = new XShellDescriptor();
-
-  /**
-   * Set to true for debugging.
-   */
-  private static final boolean DEBUG = false;
 
   /**
    * Command line.
@@ -68,6 +67,8 @@ public final class XShellBuilder extends Builder {
   public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
           throws InterruptedException, IOException {
 
+    LOG.log(Level.FINE, "Unmodified command line: " + commandLine);
+
     String match = "[/" + Pattern.quote("\\") + "]";
     String replacement = Matcher.quoteReplacement((launcher.isUnix() ? "/" : "\\"));
 
@@ -86,33 +87,32 @@ public final class XShellBuilder extends Builder {
     m.appendTail(sb);
 
     String cmdLine = sb.toString();
+    LOG.log(Level.FINE, "File separators sanitized: " + cmdLine);
       
     if (launcher.isUnix()) {
       cmdLine = convertEnvVarsToUnix(cmdLine);
     } else {
       cmdLine = convertEnvVarsToWindows(cmdLine);
     }
+    LOG.log(Level.FINE, "Environment variables sanitized: " + cmdLine);
 
     ArgumentListBuilder args = new ArgumentListBuilder();
     if (cmdLine != null) {
       args.addTokenized((launcher.isUnix() && executeFromWorkingDir) ? "./" + cmdLine : cmdLine);
+      LOG.log(Level.FINE, "Execute from working directory: " + args.toStringWithQuote());
     }
 
     if (!launcher.isUnix()) {
       args = args.toWindowsCommand();
+      LOG.log(Level.FINE, "Windows command: " + args.toStringWithQuote());
     }
 
     EnvVars env = build.getEnvironment(listener);
     env.putAll(build.getBuildVariables());
 
-    if (DEBUG) {
-      final PrintStream logger = listener.getLogger();
-      for (final Map.Entry<String, String> entry : env.entrySet()) {
-          logger.println("(DEBUG) env: key= " + entry.getKey() + " value= " + entry.getValue());
-      }
-      logger.println("Args: " + args.toStringWithQuote());
-      logger.println("Working dir: " + build.getModuleRoot());
-    }
+    LOG.log(Level.FINEST, "Environment variables: " + env.entrySet().toString());
+    LOG.log(Level.FINE, "Command line: " + args.toStringWithQuote());
+    LOG.log(Level.FINE, "Working directory: " + build.getModuleRoot());
 
     try {
       final int result = launcher.decorateFor(build.getBuiltOn()).launch()
