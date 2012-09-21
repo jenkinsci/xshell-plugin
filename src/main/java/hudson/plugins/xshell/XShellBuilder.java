@@ -28,8 +28,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public final class XShellBuilder extends Builder {
 
   private static final Logger LOG = Logger.getLogger(XShellBuilder.class.getName());
-  private static final Pattern WIN_ENV_VAR_REGEX = Pattern.compile("%(\\S+?)%");
-  private static final Pattern UNIX_ENV_VAR_REGEX = Pattern.compile("\\$(\\S+)");
+  private static final Pattern WIN_ENV_VAR_REGEX = Pattern.compile("%(\\b+?)%");
+  private static final Pattern UNIX_ENV_VAR_REGEX = Pattern.compile("\\$(\\b+)");
 
   @Extension
   public static final XShellDescriptor DESCRIPTOR = new XShellDescriptor();
