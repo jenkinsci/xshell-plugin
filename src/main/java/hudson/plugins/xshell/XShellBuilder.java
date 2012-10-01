@@ -28,8 +28,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public final class XShellBuilder extends Builder {
 
   private static final Logger LOG = Logger.getLogger(XShellBuilder.class.getName());
-  private static final Pattern WIN_ENV_VAR_REGEX = Pattern.compile("%(%([a-zA-Z0-9_]+)%)%");
+  private static final Pattern WIN_ENV_VAR_REGEX = Pattern.compile("%([a-zA-Z0-9_]+)%");
   private static final Pattern UNIX_ENV_VAR_REGEX = Pattern.compile("\\$([a-zA-Z0-9_]+)");
+  public static final String UNIX_SEP = "/";
+  public static final String WINDOWS_SEP = "\\";
 
   @Extension
   public static final XShellDescriptor DESCRIPTOR = new XShellDescriptor();
@@ -69,24 +71,7 @@ public final class XShellBuilder extends Builder {
 
     LOG.log(Level.FINE, "Unmodified command line: " + commandLine);
 
-    String match = "[/" + Pattern.quote("\\") + "]";
-    String replacement = Matcher.quoteReplacement((launcher.isUnix() ? "/" : "\\"));
-
-    Pattern words = Pattern.compile("\\S+");
-    Pattern urls = Pattern.compile("(https*|ftp):");
-    StringBuffer sb = new StringBuffer();
-    Matcher m = words.matcher(commandLine);
-    while (m.find()) {
-      String item = m.group();
-      if (!urls.matcher(item).find()) {
-        // Not sure if File.separator is right if executing on slave with OS different from master's one
-        //String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
-        m.appendReplacement(sb, Matcher.quoteReplacement(item.replaceAll(match, replacement)));
-      }
-    }
-    m.appendTail(sb);
-
-    String cmdLine = sb.toString();
+    String cmdLine = convertSeparator(commandLine, (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP));
     LOG.log(Level.FINE, "File separators sanitized: " + cmdLine);
       
     if (launcher.isUnix()) {
@@ -125,6 +110,27 @@ public final class XShellBuilder extends Builder {
       return false;
     }
   }
+  
+  public static String convertSeparator(String cmdLine, String newSeparator) {
+    String match = "[/" + Pattern.quote("\\") + "]";
+    String replacement = Matcher.quoteReplacement(newSeparator);
+
+    Pattern words = Pattern.compile("\\S+");
+    Pattern urls = Pattern.compile("(https*|ftp):");
+    StringBuffer sb = new StringBuffer();
+    Matcher m = words.matcher(cmdLine);
+    while (m.find()) {
+      String item = m.group();
+      if (!urls.matcher(item).find()) {
+        // Not sure if File.separator is right if executing on slave with OS different from master's one
+        //String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
+        m.appendReplacement(sb, Matcher.quoteReplacement(item.replaceAll(match, replacement)));
+      }
+    }
+    m.appendTail(sb);
+
+    return sb.toString();
+  }
 
   /**
    * Convert Windows-style environment variables to UNIX-style.
@@ -133,7 +139,7 @@ public final class XShellBuilder extends Builder {
    * @param cmdLine The command line with Windows-style env vars to convert.
    * @return The command line with UNIX-style env vars.
    */
-  private String convertEnvVarsToUnix(String cmdLine) {
+  public static String convertEnvVarsToUnix(String cmdLine) {
     if (cmdLine == null) {
       return null;
     }
@@ -156,7 +162,7 @@ public final class XShellBuilder extends Builder {
    * @param cmdLine The command line with Windows-style env vars to convert.
    * @return The command line with UNIX-style env vars.
    */
-  private String convertEnvVarsToWindows(String cmdLine) {
+  public static String convertEnvVarsToWindows(String cmdLine) {
     if (cmdLine == null) {
       return null;
     }
