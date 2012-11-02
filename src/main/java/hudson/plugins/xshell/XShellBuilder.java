@@ -97,11 +97,11 @@ public final class XShellBuilder extends Builder {
 
     LOG.log(Level.FINEST, "Environment variables: " + env.entrySet().toString());
     LOG.log(Level.FINE, "Command line: " + args.toStringWithQuote());
-    LOG.log(Level.FINE, "Working directory: " + build.getModuleRoot());
+    LOG.log(Level.FINE, "Working directory: " + build.getWorkspace());
 
     try {
       final int result = launcher.decorateFor(build.getBuiltOn()).launch()
-              .cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot()).join();
+              .cmds(args).envs(env).stdout(listener).pwd(build.getWorkspace()).join();
       return result == 0;
     } catch (final IOException e) {
       Util.displayIOException(e, listener);
