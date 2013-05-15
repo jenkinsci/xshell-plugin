@@ -116,7 +116,7 @@ public final class XShellBuilder extends Builder {
     String replacement = Matcher.quoteReplacement(newSeparator);
 
     Pattern words = Pattern.compile("\\S+");
-    Pattern urls = Pattern.compile("(https*|ftp):");
+    Pattern urls = Pattern.compile("(https*|ftp|git):");
     StringBuffer sb = new StringBuffer();
     Matcher m = words.matcher(cmdLine);
     while (m.find()) {
