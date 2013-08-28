@@ -1,28 +1,21 @@
 package hudson.plugins.xshell;
 
-import java.io.*;
-import java.util.Map;
-
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.Launcher;
-import hudson.Util;
+import hudson.*;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
+import hudson.model.StreamBuildListener;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
-import hudson.Proc;
-import hudson.model.StreamBuildListener;
+import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * XShell Builder Plugin.
@@ -132,7 +125,7 @@ public final class XShellBuilder extends Builder {
     try{
         timeAllowed = Long.parseLong(this.timeAllocated);
     }catch(Exception e){
-        timeAllowed = new Long(0);
+        timeAllowed = (long) 0;
     }
 
     try {
@@ -162,7 +155,7 @@ public final class XShellBuilder extends Builder {
             child.kill();
             listener.getLogger().println("Timed out <" + this.timeAllocated +">. Terminated");
         }else{
-          Thread.currentThread().sleep(2);
+          Thread.sleep(2);
         }
       }
 
