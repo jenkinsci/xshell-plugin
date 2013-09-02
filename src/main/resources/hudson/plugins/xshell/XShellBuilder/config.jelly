@@ -6,5 +6,10 @@
     <f:entry title="${%Executable is in workspace dir}" help="${rootURL}/../plugin/xshell/help-workingdir.html">
         <f:checkbox name="xshellBuilder.executeFromWorkingDir" checked="${instance.executeFromWorkingDir}" />
     </f:entry>
-
+    <f:entry title="${%Regex to kill job}" help="${rootURL}/../plugin/xshell/help-regex.html">
+        <f:textbox name="xshellBuilder.regexToKill" value="${instance.regexToKill}" />
+    </f:entry>
+    <f:entry title="${%Time allocated}" help="${rootURL}/../plugin/xshell/help-time.html">
+        <f:number name="xshellBuilder.timeAllocated" value="${instance.timeAllocated}" />
+    </f:entry>
 </j:jelly>

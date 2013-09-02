@@ -1,24 +1,21 @@
 package hudson.plugins.xshell;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Map;
-
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.Launcher;
-import hudson.Util;
+import hudson.*;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
+import hudson.model.StreamBuildListener;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
+import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.kohsuke.stapler.DataBoundConstructor;
+
 
 /**
  * XShell Builder Plugin.
@@ -46,6 +43,17 @@ public final class XShellBuilder extends Builder {
    */
   private final Boolean executeFromWorkingDir;
 
+  /**
+    * if output matches this then kill the step.
+    */
+  private final String regexToKill;
+
+  /**
+    * amount of time to allocate to the step
+    */
+  private final String timeAllocated;
+
+
   public String getCommandLine() {
     return commandLine;
   }
@@ -54,10 +62,20 @@ public final class XShellBuilder extends Builder {
     return executeFromWorkingDir;
   }
 
-  @DataBoundConstructor
-  public XShellBuilder(final String commandLine, final Boolean executeFromWorkingDir) {
+  public String getRegexToKill() {
+     return regexToKill;
+  }
+
+  public String getTimeAllocated() {
+     return timeAllocated;
+  }
+
+    @DataBoundConstructor
+  public XShellBuilder(final String commandLine, final Boolean executeFromWorkingDir, final String regexToKill, final String timeAllocated) {
     this.commandLine = Util.fixEmptyAndTrim(commandLine);
-    this.executeFromWorkingDir = executeFromWorkingDir;
+      this.executeFromWorkingDir = executeFromWorkingDir;
+      this.regexToKill = regexToKill;
+      this.timeAllocated = timeAllocated;
   }
 
   @Override
@@ -69,7 +87,9 @@ public final class XShellBuilder extends Builder {
   public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
           throws InterruptedException, IOException {
 
-    LOG.log(Level.FINE, "Unmodified command line: " + commandLine);
+      LOG.log(Level.FINE, "Unmodified command line: " + commandLine);
+      LOG.log(Level.FINE, "Regex to kill: " + regexToKill);
+      LOG.log(Level.FINE, "Time allocated before kill: " + timeAllocated);
 
     String cmdLine = convertSeparator(commandLine, (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP));
     LOG.log(Level.FINE, "File separators sanitized: " + cmdLine);
@@ -99,10 +119,50 @@ public final class XShellBuilder extends Builder {
     LOG.log(Level.FINE, "Command line: " + args.toStringWithQuote());
     LOG.log(Level.FINE, "Working directory: " + build.getWorkspace());
 
+    Pattern r = Pattern.compile(this.regexToKill);
+    Long timeAllowed;
+
+    try{
+        timeAllowed = Long.parseLong(this.timeAllocated);
+    }catch(Exception e){
+        timeAllowed = (long) 0;
+    }
+
     try {
-      final int result = launcher.decorateFor(build.getBuiltOn()).launch()
-              .cmds(args).envs(env).stdout(listener).pwd(build.getWorkspace()).join();
-      return result == 0;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        StreamBuildListener sbl = new StreamBuildListener(baos);
+
+       final Proc child =     launcher.decorateFor(build.getBuiltOn()).launch()
+              .cmds(args).envs(env).stdout(sbl).pwd(build.getWorkspace()).start();
+
+       Long startTime = System.currentTimeMillis();
+
+      while(child.isAlive()){
+
+        baos.flush();
+        String s = baos.toString();
+        baos.reset();
+
+        listener.getLogger().print(s);
+        listener.getLogger().flush();
+
+        if ((this.regexToKill.length() > 0) && (r.matcher(s).find())){
+            LOG.log(Level.FINEST, "Matched failure in log");
+            child.kill();
+            listener.getLogger().println("Matched <" + this.regexToKill +"> in output. Terminated");
+        }else if( (timeAllowed > 0) && ((System.currentTimeMillis() - startTime) / 1000) > timeAllowed){
+            LOG.log(Level.FINEST, "Timed out");
+            child.kill();
+            listener.getLogger().println("Timed out <" + this.timeAllocated +">. Terminated");
+        }else{
+          Thread.sleep(2);
+        }
+      }
+
+      baos.flush();
+      listener.getLogger().print(baos.toString());
+      listener.getLogger().flush();
+      return child.join() == 0;
     } catch (final IOException e) {
       Util.displayIOException(e, listener);
       final String errorMessage = Messages.XShell_ExecFailed();
