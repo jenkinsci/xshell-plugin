@@ -74,7 +74,7 @@ public final class XShellBuilder extends Builder {
   public XShellBuilder(final String commandLine, final Boolean executeFromWorkingDir, final String regexToKill, final String timeAllocated) {
     this.commandLine = Util.fixEmptyAndTrim(commandLine);
       this.executeFromWorkingDir = executeFromWorkingDir;
-      this.regexToKill = regexToKill;
+      this.regexToKill = regexToKill == null ? "" : regexToKill;
       this.timeAllocated = timeAllocated;
   }
 
