@@ -74,7 +74,7 @@ public final class XShellBuilder extends Builder {
   public XShellBuilder(final String commandLine, final Boolean executeFromWorkingDir, final String regexToKill, final String timeAllocated) {
     this.commandLine = Util.fixEmptyAndTrim(commandLine);
       this.executeFromWorkingDir = executeFromWorkingDir;
-      this.regexToKill = regexToKill;
+      this.regexToKill = regexToKill == null ? "" : regexToKill;
       this.timeAllocated = timeAllocated;
   }
 
@@ -119,7 +119,7 @@ public final class XShellBuilder extends Builder {
     LOG.log(Level.FINE, "Command line: " + args.toStringWithQuote());
     LOG.log(Level.FINE, "Working directory: " + build.getWorkspace());
 
-    Pattern r = Pattern.compile(this.regexToKill);
+    Pattern r = Pattern.compile(this.regexToKill == null ? "" : this.regexToKill);
     Long timeAllowed;
 
     try{
@@ -146,7 +146,7 @@ public final class XShellBuilder extends Builder {
         listener.getLogger().print(s);
         listener.getLogger().flush();
 
-        if ((this.regexToKill.length() > 0) && (r.matcher(s).find())){
+        if ((this.regexToKill != null) && (this.regexToKill.length() > 0) && (r.matcher(s).find())){
             LOG.log(Level.FINEST, "Matched failure in log");
             child.kill();
             listener.getLogger().println("Matched <" + this.regexToKill +"> in output. Terminated");
