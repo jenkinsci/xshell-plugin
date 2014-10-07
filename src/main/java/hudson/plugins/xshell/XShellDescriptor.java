@@ -1,6 +1,7 @@
 package hudson.plugins.xshell;
 
-import hudson.model.Descriptor;
+import hudson.model.AbstractProject;
+import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 
 import net.sf.json.JSONObject;
@@ -12,7 +13,7 @@ import org.kohsuke.stapler.StaplerRequest;
  * 
  * @author Marco Ambu
  */
-public final class XShellDescriptor extends Descriptor<Builder> {
+public final class XShellDescriptor extends BuildStepDescriptor<Builder> {
 
     public XShellDescriptor() {
         super(XShellBuilder.class);
@@ -33,6 +34,11 @@ public final class XShellDescriptor extends Descriptor<Builder> {
     @Override
     public String getDisplayName() {
         return Messages.XShell_DisplayName();
+    }
+    
+    @Override
+    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+        return true;
     }
 
     @Override
