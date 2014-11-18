@@ -163,6 +163,7 @@ public final class XShellBuilder extends Builder {
            LOG.log(Level.FINEST, "Aborted by user");
            child.kill();
            listener.getLogger().println("Aborted by User. Terminated");
+           throw(new InterruptedException("User Aborted"));
       }
 
       baos.flush();
