@@ -137,26 +137,33 @@ public final class XShellBuilder extends Builder {
 
        Long startTime = System.currentTimeMillis();
 
-      while(child.isAlive()){
+       try {
+           while (child.isAlive()) {
 
-        baos.flush();
-        String s = baos.toString();
-        baos.reset();
+               baos.flush();
+               String s = baos.toString();
+               baos.reset();
 
-        listener.getLogger().print(s);
-        listener.getLogger().flush();
+               listener.getLogger().print(s);
+               listener.getLogger().flush();
 
-        if ((this.regexToKill != null) && (this.regexToKill.length() > 0) && (r.matcher(s).find())){
-            LOG.log(Level.FINEST, "Matched failure in log");
-            child.kill();
-            listener.getLogger().println("Matched <" + this.regexToKill +"> in output. Terminated");
-        }else if( (timeAllowed > 0) && ((System.currentTimeMillis() - startTime) / 1000) > timeAllowed){
-            LOG.log(Level.FINEST, "Timed out");
-            child.kill();
-            listener.getLogger().println("Timed out <" + this.timeAllocated +">. Terminated");
-        }else{
-          Thread.sleep(2);
-        }
+               if ((this.regexToKill != null) && (this.regexToKill.length() > 0) && (r.matcher(s).find())) {
+                   LOG.log(Level.FINEST, "Matched failure in log");
+                   child.kill();
+                   listener.getLogger().println("Matched <" + this.regexToKill + "> in output. Terminated");
+               } else if ((timeAllowed > 0) && ((System.currentTimeMillis() - startTime) / 1000) > timeAllowed) {
+                   LOG.log(Level.FINEST, "Timed out");
+                   child.kill();
+                   listener.getLogger().println("Timed out <" + this.timeAllocated + ">. Terminated");
+               } else {
+                   Thread.sleep(2);
+               }
+           }
+      } catch (InterruptedException intEx) {
+           LOG.log(Level.FINEST, "Aborted by user");
+           child.kill();
+           listener.getLogger().println("Aborted by User. Terminated");
+           throw(new InterruptedException("User Aborted"));
       }
 
       baos.flush();
