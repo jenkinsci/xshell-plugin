@@ -91,9 +91,16 @@ public final class XShellBuilder extends Builder {
       LOG.log(Level.FINE, "Regex to kill: " + regexToKill);
       LOG.log(Level.FINE, "Time allocated before kill: " + timeAllocated);
 
+    final EnvVars env = build.getEnvironment(listener);
+    
+    
     String cmdLine = convertSeparator(commandLine, (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP));
     LOG.log(Level.FINE, "File separators sanitized: " + cmdLine);
-      
+
+    cmdLine = env.expand(cmdLine);
+    
+    LOG.log(Level.FINE, "Expanded build environment vars: " + cmdLine);
+    
     if (launcher.isUnix()) {
       cmdLine = convertEnvVarsToUnix(cmdLine);
     } else {
@@ -112,7 +119,6 @@ public final class XShellBuilder extends Builder {
       LOG.log(Level.FINE, "Windows command: " + args.toStringWithQuote());
     }
 
-    EnvVars env = build.getEnvironment(listener);
     env.putAll(build.getBuildVariables());
 
     LOG.log(Level.FINEST, "Environment variables: " + env.entrySet().toString());
