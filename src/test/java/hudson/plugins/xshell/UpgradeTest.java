@@ -55,7 +55,7 @@ public class UpgradeTest extends HudsonTestCase {
       final String regexToKill = null;
       final String timeAllocated = null;
 
-      project.getBuildersList().add(new XShellBuilder("echo " + arguments, execFromWorkingDir, regexToKill, timeAllocated));
+      project.getBuildersList().add(new XShellBuilder("echo " + arguments, "", execFromWorkingDir, regexToKill, timeAllocated));
 
       FreeStyleBuild build = project.scheduleBuild2(0).get();
       String s = FileUtils.readFileToString(build.getLogFile());

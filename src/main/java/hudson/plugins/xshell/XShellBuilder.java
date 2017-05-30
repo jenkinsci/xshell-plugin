@@ -39,6 +39,11 @@ public final class XShellBuilder extends Builder {
   private final String commandLine;
 
   /**
+   * Working directory relative to the project root
+   */
+  private final String workingDir;
+
+  /**
    * Specify if command is executed from working dir.
    */
   private final Boolean executeFromWorkingDir;
@@ -58,6 +63,10 @@ public final class XShellBuilder extends Builder {
     return commandLine;
   }
 
+  public String getWorkingDir() {
+    return workingDir;
+  }
+
   public Boolean getExecuteFromWorkingDir() {
     return executeFromWorkingDir;
   }
@@ -71,11 +80,12 @@ public final class XShellBuilder extends Builder {
   }
 
     @DataBoundConstructor
-  public XShellBuilder(final String commandLine, final Boolean executeFromWorkingDir, final String regexToKill, final String timeAllocated) {
+  public XShellBuilder(final String commandLine, final String workingDir, final Boolean executeFromWorkingDir, final String regexToKill, final String timeAllocated) {
     this.commandLine = Util.fixEmptyAndTrim(commandLine);
-      this.executeFromWorkingDir = executeFromWorkingDir;
-      this.regexToKill = regexToKill == null ? "" : regexToKill;
-      this.timeAllocated = timeAllocated;
+    this.workingDir = workingDir;
+    this.executeFromWorkingDir = executeFromWorkingDir;
+    this.regexToKill = regexToKill == null ? "" : regexToKill;
+    this.timeAllocated = timeAllocated;
   }
 
   @Override
@@ -115,9 +125,12 @@ public final class XShellBuilder extends Builder {
     EnvVars env = build.getEnvironment(listener);
     env.putAll(build.getBuildVariables());
 
+    // Determine the correct working directory
+    String absWorkingDir = build.getWorkspace() + (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP) + workingDir;
+
     LOG.log(Level.FINEST, "Environment variables: " + env.entrySet().toString());
     LOG.log(Level.FINE, "Command line: " + args.toStringWithQuote());
-    LOG.log(Level.FINE, "Working directory: " + build.getWorkspace());
+    LOG.log(Level.FINE, "Working directory: " + absWorkingDir);
 
     Pattern r = Pattern.compile(this.regexToKill == null ? "" : this.regexToKill);
     Long timeAllowed;
@@ -133,7 +146,7 @@ public final class XShellBuilder extends Builder {
         StreamBuildListener sbl = new StreamBuildListener(baos);
 
        final Proc child =     launcher.decorateFor(build.getBuiltOn()).launch()
-              .cmds(args).envs(env).stdout(sbl).pwd(build.getWorkspace()).start();
+              .cmds(args).envs(env).stdout(sbl).pwd(absWorkingDir).start();
 
        Long startTime = System.currentTimeMillis();
 

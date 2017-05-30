@@ -3,7 +3,10 @@
     <f:entry title="${%Command line}" help="${rootURL}/../plugin/xshell/help-commandline.html">
         <f:textbox name="xshellBuilder.commandLine" value="${instance.commandLine}" />
     </f:entry>
-    <f:entry title="${%Executable is in workspace dir}" help="${rootURL}/../plugin/xshell/help-workingdir.html">
+    <f:entry title="${%Working dir}" help="${rootURL}/../plugin/xshell/help-workingDir.html">
+        <f:textbox name="xshellBuilder.workingDir" value="${instance.workingDir}" />
+    </f:entry>
+    <f:entry title="${%Executable is in workspace dir}" help="${rootURL}/../plugin/xshell/help-executeFromWorkingDir.html">
         <f:checkbox name="xshellBuilder.executeFromWorkingDir" checked="${instance.executeFromWorkingDir}" />
     </f:entry>
     <f:entry title="${%Regex to kill job}" help="${rootURL}/../plugin/xshell/help-regex.html">
