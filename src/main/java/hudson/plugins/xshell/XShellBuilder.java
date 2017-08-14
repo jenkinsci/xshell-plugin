@@ -10,6 +10,7 @@ import hudson.util.ArgumentListBuilder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -126,7 +127,12 @@ public final class XShellBuilder extends Builder {
     env.putAll(build.getBuildVariables());
 
     // Determine the correct working directory
-    String absWorkingDir = build.getWorkspace() + (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP) + workingDir;
+    String absWorkingDir;
+    if (new File(workingDir).isAbsolute()) {
+      absWorkingDir = workingDir;
+    } else {
+      absWorkingDir = build.getWorkspace() + (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP) + workingDir;
+    }
 
     LOG.log(Level.FINEST, "Environment variables: " + env.entrySet().toString());
     LOG.log(Level.FINE, "Command line: " + args.toStringWithQuote());
