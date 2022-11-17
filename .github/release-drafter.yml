@@ -1,1 +1,2 @@
 :extends: .github
+tag-template: xshell-$NEXT_MINOR_VERSION
