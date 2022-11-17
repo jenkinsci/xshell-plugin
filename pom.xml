@@ -27,6 +27,11 @@
             <name>Marco Ambu</name>
             <email>marco.ambu+jenkins@gmail.com</email>
         </developer>
+        <developer>
+            <id>markewaite</id>
+            <name>Mark Waite</name>
+            <email>mark.earl.waite@gmail.com</email>
+        </developer>
     </developers>
     
   <scm>
