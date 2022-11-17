@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
@@ -11,10 +12,10 @@
   <artifactId>xshell</artifactId>
   <version>0.11-SNAPSHOT</version>
   <packaging>hpi</packaging>
+
   <name>Jenkins cross-platform shell plugin</name>
   <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
   <url>http://wiki.jenkins-ci.org/display/JENKINS/XShell+Plugin</url>
-
   <licenses>
     <license>
       <name>MIT license</name>
@@ -62,7 +63,6 @@
       <url>https://repo.jenkins-ci.org/public/</url>
     </repository>
   </repositories>
-
   <pluginRepositories>
     <pluginRepository>
       <id>repo.jenkins-ci.org</id>
@@ -102,5 +102,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
 </project>
