@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>xshell</artifactId>
-  <version>0.11-SNAPSHOT</version>
+  <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
 
   <name>Jenkins cross-platform shell plugin</name>
@@ -37,12 +37,15 @@
   </developers>
 
   <scm>
-    <connection>scm:git:https://github.com/jenkinsci/xshell-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/xshell-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/xshell-plugin</url>
+    <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+    <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+    <url>https://github.com/${gitHubRepo}</url>
   </scm>
 
   <properties>
+    <revision>0.11</revision>
+    <changelist>-SNAPSHOT</changelist>
+    <gitHubRepo>jenkinsci/xshell-plugin</gitHubRepo>
     <jenkins.version>2.332.4</jenkins.version>
   </properties>
 
