@@ -4,6 +4,7 @@
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>4.50</version>
+        <relativePath />
     </parent>
 
     <artifactId>xshell</artifactId>
