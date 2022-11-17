@@ -1,19 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.jenkins-ci.plugins</groupId>
-        <artifactId>plugin</artifactId>
-        <version>4.50</version>
-        <relativePath />
-    </parent>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>xshell</artifactId>
-    <version>0.11-SNAPSHOT</version>
-    <packaging>hpi</packaging>
-    <name>Jenkins cross-platform shell plugin</name>
-    <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/XShell+Plugin</url>
+  <parent>
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>plugin</artifactId>
+    <version>4.50</version>
+    <relativePath></relativePath>
+  </parent>
 
+  <artifactId>xshell</artifactId>
+  <version>0.11-SNAPSHOT</version>
+  <packaging>hpi</packaging>
+
+  <name>Jenkins cross-platform shell plugin</name>
+  <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
+  <url>http://wiki.jenkins-ci.org/display/JENKINS/XShell+Plugin</url>
   <licenses>
     <license>
       <name>MIT license</name>
@@ -21,52 +23,83 @@
     </license>
   </licenses>
 
-    <developers>
-        <developer>
-            <id>mambu</id>
-            <name>Marco Ambu</name>
-            <email>marco.ambu+jenkins@gmail.com</email>
-        </developer>
-        <developer>
-            <id>markewaite</id>
-            <name>Mark Waite</name>
-            <email>mark.earl.waite@gmail.com</email>
-        </developer>
-    </developers>
-    
+  <developers>
+    <developer>
+      <id>mambu</id>
+      <name>Marco Ambu</name>
+      <email>marco.ambu+jenkins@gmail.com</email>
+    </developer>
+    <developer>
+      <id>markewaite</id>
+      <name>Mark Waite</name>
+      <email>mark.earl.waite@gmail.com</email>
+    </developer>
+  </developers>
+
   <scm>
     <connection>scm:git:https://github.com/jenkinsci/xshell-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/xshell-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/xshell-plugin</url>
   </scm>
 
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
-        </repository>
-    </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
-    <dependencies>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-library</artifactId>
-        <version>1.3</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>2.27.2</version>
+          <configuration>
+            <!-- define a language-specific format -->
+            <pom>
+              <indent>
+                <spaces>true</spaces>
+              </indent>
+              <includes>
+                <include>pom.xml</include>
+              </includes>
+              <sortPom></sortPom>
+            </pom>
+          </configuration>
+          <executions>
+            <execution>
+              <!-- Runs in verify phase by default -->
+              <goals>
+                <!-- Can be disabled using -Dspotless.check.skip -->
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>
