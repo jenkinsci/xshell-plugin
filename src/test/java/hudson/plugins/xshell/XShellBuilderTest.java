@@ -121,6 +121,18 @@ public class XShellBuilderTest {
     }
 
     @Test
+    public void testPerformAbsoluteWorkingDir() throws Exception {
+        FreeStyleProject project = rule.createFreeStyleProject("job-" + testName.getMethodName());
+        Launcher launcher = rule.createLocalLauncher();
+        OutputStream outputStream = new ByteArrayOutputStream();
+        BuildListener listener = new StreamBuildListener(outputStream, Charset.forName("UTF-8"));
+        AbstractBuild build = project.scheduleBuild2(0).get();
+        workingDir = System.getProperty("java.io.tmpdir");
+        builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
+        assertTrue("Failed in perform", builder.perform(build, launcher, listener));
+    }
+
+    @Test
     public void testConvertSeparator() {
         String newSeparator = "/";
         assertThat(XShellBuilder.convertSeparator(commandLine, newSeparator),
