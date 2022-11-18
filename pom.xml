@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>xshell</artifactId>
-  <version>${revision}${changelist}</version>
+  <version>${changelist}</version>
   <packaging>hpi</packaging>
 
   <name>Jenkins cross-platform shell plugin</name>
@@ -43,8 +43,7 @@
   </scm>
 
   <properties>
-    <revision>0.11</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <changelist>999999-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/xshell-plugin</gitHubRepo>
     <jenkins.version>2.332.4</jenkins.version>
   </properties>
