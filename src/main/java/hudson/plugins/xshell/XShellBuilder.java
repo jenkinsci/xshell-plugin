@@ -134,10 +134,11 @@ public final class XShellBuilder extends Builder {
 
     // Determine the correct working directory
     String absWorkingDir;
-    if (new File(workingDir).isAbsolute()) {
-      absWorkingDir = workingDir;
+    String nonNullWorkingDir = workingDir != null ? workingDir : ".";
+    if (new File(nonNullWorkingDir).isAbsolute()) {
+      absWorkingDir = nonNullWorkingDir;
     } else {
-      absWorkingDir = build.getWorkspace() + (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP) + workingDir;
+      absWorkingDir = build.getWorkspace() + (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP) + nonNullWorkingDir;
     }
 
     LOG.log(Level.FINEST, "Environment variables: " + env.entrySet().toString());
