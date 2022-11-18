@@ -14,8 +14,8 @@
   <packaging>hpi</packaging>
 
   <name>Jenkins cross-platform shell plugin</name>
-  <description>This plugin allows you to call shell commands using the right shell depending on the executing OS.</description>
-  <url>http://wiki.jenkins-ci.org/display/JENKINS/XShell+Plugin</url>
+  <description>Run simple shell commands using the right shell depending on the agent operating system.</description>
+  <url>https://github.com/xshell-plugin/</url>
   <licenses>
     <license>
       <name>MIT license</name>
