@@ -15,7 +15,7 @@
 
   <name>Jenkins cross-platform shell plugin</name>
   <description>Run simple shell commands using the right shell depending on the agent operating system.</description>
-  <url>https://github.com/xshell-plugin/</url>
+  <url>https://github.com/${gitHubRepo}</url>
   <licenses>
     <license>
       <name>MIT license</name>
