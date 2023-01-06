@@ -89,6 +89,16 @@
           <version>2.29.0</version>
           <configuration>
             <!-- define a language-specific format -->
+            <java>
+              <!-- no need to specify files, inferred automatically -->
+              <!-- apply a specific flavor of google-java-format -->
+              <googleJavaFormat>
+                <version>1.15.0</version>
+                <style>AOSP</style>
+              </googleJavaFormat>
+              <endWithNewline />
+              <removeUnusedImports />
+            </java>
             <pom>
               <indent>
                 <spaces>true</spaces>
