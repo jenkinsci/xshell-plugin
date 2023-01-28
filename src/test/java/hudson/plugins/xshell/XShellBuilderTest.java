@@ -12,6 +12,7 @@ import hudson.model.StreamBuildListener;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Random;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -39,13 +40,15 @@ public class XShellBuilderTest {
     private String timeAllocated;
     private XShellBuilder builder;
 
+    private Random random = new Random();
+
     @Before
     public void setUp() {
         commandLine = "echo Hello \\n; echo from " + testName.getMethodName();
         workingDir = ".";
         executeFromWorkingDir = false;
-        regexToKill = null;
-        timeAllocated = null;
+        regexToKill = random.nextBoolean() ? null : "xyzzy.*grue";
+        timeAllocated = random.nextBoolean() ? null : "37";
         builder =
                 new XShellBuilder(
                         commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
@@ -77,7 +80,8 @@ public class XShellBuilderTest {
 
     @Test
     public void testGetRegexToKill() {
-        assertThat(builder.getRegexToKill(), is("")); // Null is converted to ""
+        String expected = regexToKill == null ? "" : regexToKill;
+        assertThat(builder.getRegexToKill(), is(expected));
     }
 
     @Test
