@@ -1,6 +1,7 @@
 package hudson.plugins.xshell;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -148,11 +149,21 @@ public class XShellBuilderTest {
     }
 
     @Test
+    public void testConvertEnvVarsToUnixNullArgument() {
+        assertThat(XShellBuilder.convertEnvVarsToUnix(null), is(nullValue()));
+    }
+
+    @Test
     public void testConvertEnvVarsToWindows() {
         commandLine = "PATH=/opt/jdk17/bin:";
         assertThat(
                 XShellBuilder.convertEnvVarsToWindows(commandLine + UNIX_ENV_VAR),
                 is("PATH=/opt/jdk17/bin:" + WINDOWS_ENV_VAR));
+    }
+
+    @Test
+    public void testConvertEnvVarsToWindowsNullArgument() {
+        assertThat(XShellBuilder.convertEnvVarsToWindows(null), is(nullValue()));
     }
 
     @Test
