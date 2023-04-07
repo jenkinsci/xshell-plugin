@@ -1,4 +1,6 @@
 <?jelly escape-by-default='true'?>
 <div>
-  Run simple shell commands using the right shell depending on the agent operating system.
+  Run simple shell commands using a common shell for the agent operating system.
+  Windows agents execute the commands in the <code>cmd.exe</code> command processor.
+  Unix agents execute the commands with the shell executable defined in the Jenkins controller configuration.
 </div>
