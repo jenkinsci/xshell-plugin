@@ -28,9 +28,11 @@ import org.jvnet.hudson.test.JenkinsRule;
  */
 public class XShellBuilderTest {
 
-    @ClassRule public static JenkinsRule rule = new JenkinsRule();
+    @ClassRule
+    public static JenkinsRule rule = new JenkinsRule();
 
-    @Rule public TestName testName = new TestName();
+    @Rule
+    public TestName testName = new TestName();
 
     public XShellBuilderTest() {}
 
@@ -50,9 +52,7 @@ public class XShellBuilderTest {
         executeFromWorkingDir = false;
         regexToKill = random.nextBoolean() ? null : "xyzzy.*grue";
         timeAllocated = random.nextBoolean() ? null : "37";
-        builder =
-                new XShellBuilder(
-                        commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
+        builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
     }
 
     @Test
@@ -68,9 +68,7 @@ public class XShellBuilderTest {
     @Test
     public void testGetWorkingDirNull() {
         workingDir = null;
-        builder =
-                new XShellBuilder(
-                        commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
+        builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
         assertThat(builder.getWorkingDir(), is(workingDir));
     }
 
@@ -108,9 +106,7 @@ public class XShellBuilderTest {
         BuildListener listener = new StreamBuildListener(outputStream, Charset.forName("UTF-8"));
         AbstractBuild build = project.scheduleBuild2(0).get();
         workingDir = null;
-        builder =
-                new XShellBuilder(
-                        commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
+        builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
         assertTrue("Failed in perform", builder.perform(build, launcher, listener));
     }
 
@@ -122,9 +118,7 @@ public class XShellBuilderTest {
         BuildListener listener = new StreamBuildListener(outputStream, Charset.forName("UTF-8"));
         AbstractBuild build = project.scheduleBuild2(0).get();
         workingDir = System.getProperty("java.io.tmpdir");
-        builder =
-                new XShellBuilder(
-                        commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
+        builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
         assertTrue("Failed in perform", builder.perform(build, launcher, listener));
     }
 
@@ -143,9 +137,7 @@ public class XShellBuilderTest {
     @Test
     public void testConvertEnvVarsToUnix() {
         commandLine = "set PATH=C:\\;";
-        assertThat(
-                XShellBuilder.convertEnvVarsToUnix(commandLine + WINDOWS_ENV_VAR),
-                is(commandLine + UNIX_ENV_VAR));
+        assertThat(XShellBuilder.convertEnvVarsToUnix(commandLine + WINDOWS_ENV_VAR), is(commandLine + UNIX_ENV_VAR));
     }
 
     @Test

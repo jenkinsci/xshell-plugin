@@ -29,7 +29,8 @@ public final class XShellBuilder extends Builder {
     public static final String UNIX_SEP = "/";
     public static final String WINDOWS_SEP = "\\";
 
-    @Extension public static final XShellDescriptor DESCRIPTOR = new XShellDescriptor();
+    @Extension
+    public static final XShellDescriptor DESCRIPTOR = new XShellDescriptor();
 
     /** Command line. */
     private final String commandLine;
@@ -86,8 +87,7 @@ public final class XShellBuilder extends Builder {
     }
 
     @Override
-    public boolean perform(
-            final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
             throws InterruptedException, IOException {
 
         LOG.log(Level.FINE, "Unmodified command line: " + commandLine);
@@ -96,8 +96,7 @@ public final class XShellBuilder extends Builder {
 
         final EnvVars env = build.getEnvironment(listener);
 
-        String cmdLine =
-                convertSeparator(commandLine, (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP));
+        String cmdLine = convertSeparator(commandLine, (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP));
         LOG.log(Level.FINE, "File separators sanitized: " + cmdLine);
 
         cmdLine = env.expand(cmdLine);
@@ -113,8 +112,7 @@ public final class XShellBuilder extends Builder {
 
         ArgumentListBuilder args = new ArgumentListBuilder();
         if (cmdLine != null) {
-            args.addTokenized(
-                    (launcher.isUnix() && executeFromWorkingDir) ? "./" + cmdLine : cmdLine);
+            args.addTokenized((launcher.isUnix() && executeFromWorkingDir) ? "./" + cmdLine : cmdLine);
             LOG.log(Level.FINE, "Execute from working directory: " + args.toStringWithQuote());
         }
 
@@ -131,10 +129,7 @@ public final class XShellBuilder extends Builder {
         if (new File(nonNullWorkingDir).isAbsolute()) {
             absWorkingDir = nonNullWorkingDir;
         } else {
-            absWorkingDir =
-                    build.getWorkspace()
-                            + (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP)
-                            + nonNullWorkingDir;
+            absWorkingDir = build.getWorkspace() + (launcher.isUnix() ? UNIX_SEP : WINDOWS_SEP) + nonNullWorkingDir;
         }
 
         LOG.log(Level.FINEST, "Environment variables: " + env.entrySet().toString());
@@ -154,14 +149,13 @@ public final class XShellBuilder extends Builder {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             StreamBuildListener sbl = new StreamBuildListener(baos);
 
-            final Proc child =
-                    launcher.decorateFor(build.getBuiltOn())
-                            .launch()
-                            .cmds(args)
-                            .envs(env)
-                            .stdout(sbl)
-                            .pwd(absWorkingDir)
-                            .start();
+            final Proc child = launcher.decorateFor(build.getBuiltOn())
+                    .launch()
+                    .cmds(args)
+                    .envs(env)
+                    .stdout(sbl)
+                    .pwd(absWorkingDir)
+                    .start();
 
             Long startTime = System.currentTimeMillis();
 
@@ -180,15 +174,11 @@ public final class XShellBuilder extends Builder {
                             && (r.matcher(s).find())) {
                         LOG.log(Level.FINEST, "Matched failure in log");
                         child.kill();
-                        listener.getLogger()
-                                .println(
-                                        "Matched <" + this.regexToKill + "> in output. Terminated");
-                    } else if ((timeAllowed > 0)
-                            && ((System.currentTimeMillis() - startTime) / 1000) > timeAllowed) {
+                        listener.getLogger().println("Matched <" + this.regexToKill + "> in output. Terminated");
+                    } else if ((timeAllowed > 0) && ((System.currentTimeMillis() - startTime) / 1000) > timeAllowed) {
                         LOG.log(Level.FINEST, "Timed out");
                         child.kill();
-                        listener.getLogger()
-                                .println("Timed out <" + this.timeAllocated + ">. Terminated");
+                        listener.getLogger().println("Timed out <" + this.timeAllocated + ">. Terminated");
                     } else {
                         Thread.sleep(2);
                     }
@@ -226,8 +216,7 @@ public final class XShellBuilder extends Builder {
                 // Not sure if File.separator is right if executing on slave with OS different from
                 // master's one
                 // String cmdLine = commandLine.replaceAll("[/\\\\]", File.separator);
-                m.appendReplacement(
-                        sb, Matcher.quoteReplacement(item.replaceAll(match, replacement)));
+                m.appendReplacement(sb, Matcher.quoteReplacement(item.replaceAll(match, replacement)));
             }
         }
         m.appendTail(sb);

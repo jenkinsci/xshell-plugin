@@ -40,8 +40,7 @@ public final class XShellDescriptor extends BuildStepDescriptor<Builder> {
     }
 
     @Override
-    public XShellBuilder newInstance(final StaplerRequest req, final JSONObject formData)
-            throws FormException {
+    public XShellBuilder newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
         return req.bindJSON(XShellBuilder.class, formData);
     }
 }

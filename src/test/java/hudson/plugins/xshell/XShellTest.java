@@ -9,7 +9,8 @@ import org.jvnet.hudson.test.JenkinsRule;
  * @author marco.ambu
  */
 public class XShellTest {
-    @Rule public JenkinsRule jenkinsRule = new JenkinsRule();
+    @Rule
+    public JenkinsRule jenkinsRule = new JenkinsRule();
 
     @Test
     public void testConvertSeparatorUnixToWin() throws Exception {
