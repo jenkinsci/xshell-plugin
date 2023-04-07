@@ -24,7 +24,8 @@ import org.jvnet.hudson.test.JenkinsRule;
  */
 @RunWith(JUnit4.class)
 public class UpgradeTest extends HudsonTestCase {
-    @Rule public JenkinsRule j = new JenkinsRule();
+    @Rule
+    public JenkinsRule j = new JenkinsRule();
 
     /**
      * XShell upgrade from 0.8 to 0.9 reported a null pointer exception when the job was first
@@ -36,8 +37,7 @@ public class UpgradeTest extends HudsonTestCase {
      */
     @Test
     @Bug(20660)
-    public void testXShellBuilderNullAsRegExToKill()
-            throws IOException, InterruptedException, ExecutionException {
+    public void testXShellBuilderNullAsRegExToKill() throws IOException, InterruptedException, ExecutionException {
 
         FreeStyleProject project = j.createFreeStyleProject();
 
@@ -48,13 +48,7 @@ public class UpgradeTest extends HudsonTestCase {
         final String timeAllocated = null;
 
         project.getBuildersList()
-                .add(
-                        new XShellBuilder(
-                                "echo " + arguments,
-                                "",
-                                execFromWorkingDir,
-                                regexToKill,
-                                timeAllocated));
+                .add(new XShellBuilder("echo " + arguments, "", execFromWorkingDir, regexToKill, timeAllocated));
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         String s = FileUtils.readFileToString(build.getLogFile());
