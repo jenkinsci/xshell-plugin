@@ -13,7 +13,9 @@
   <version>${changelist}</version>
   <packaging>hpi</packaging>
   <name>Jenkins cross-platform shell plugin</name>
-  <url>https://github.com/${gitHubRepo}</url>
+  <!-- Precisely declare plugin documentation URL -->
+  <!-- Plugin documentation was not included correctly with shorter URL -->
+  <url>https://github.com/jenkinsci/xshell-plugin/blob/master/README.md</url>
 
   <licenses>
     <license>
