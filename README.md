@@ -112,3 +112,8 @@ To add a XShell build step
 -   choose if the executable is in global Path or in workspace.
 
 ![](docs/images/xshell-config.png)
+
+## Release Notes
+
+* For recent versions, see [GitHub Releases](https://github.com/jenkinsci/xshell-plugin/releases)
+* For versions 0.10 and older, see the [changelog archive](https://github.com/jenkinsci/xshell-plugin/blob/120.v1307d168def8/CHANGELOG.md)
