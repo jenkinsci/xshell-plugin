@@ -104,7 +104,7 @@ This will execute `clean` in unix and `clean.bat` in windows.
 
 ## Build step configuration
 
-To add a XShell build step
+To add a XShell build step,
 
 -   click on the `Add build step` button and choose
     `Invoke XShell script`;
