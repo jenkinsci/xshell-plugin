@@ -4,7 +4,7 @@ import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 
 /**
  * Descriptor for XShell.
@@ -19,7 +19,7 @@ public final class XShellDescriptor extends BuildStepDescriptor<Builder> {
     }
 
     @Override
-    public boolean configure(final StaplerRequest req, final JSONObject formData) {
+    public boolean configure(final StaplerRequest2 req, final JSONObject formData) {
         save();
         return true;
     }
@@ -40,7 +40,7 @@ public final class XShellDescriptor extends BuildStepDescriptor<Builder> {
     }
 
     @Override
-    public XShellBuilder newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
+    public XShellBuilder newInstance(final StaplerRequest2 req, final JSONObject formData) throws FormException {
         return req.bindJSON(XShellBuilder.class, formData);
     }
 }
