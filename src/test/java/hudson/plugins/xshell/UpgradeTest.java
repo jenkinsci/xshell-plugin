@@ -1,31 +1,19 @@
 package hudson.plugins.xshell;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import org.apache.commons.io.FileUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.jvnet.hudson.test.Bug;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.junit.jupiter.api.Test;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Test upgrade from one version of XShell to another.
  *
  * @author MarkEWaite
  */
-@RunWith(JUnit4.class)
-public class UpgradeTest extends HudsonTestCase {
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+@WithJenkins
+class UpgradeTest {
 
     /**
      * XShell upgrade from 0.8 to 0.9 reported a null pointer exception when the job was first
@@ -36,8 +24,8 @@ public class UpgradeTest extends HudsonTestCase {
      * the same bug, so this test creates and executes a new job with a null regexToKill.
      */
     @Test
-    @Bug(20660)
-    public void testXShellBuilderNullAsRegExToKill() throws IOException, InterruptedException, ExecutionException {
+    @Issue("JENKINS-20660")
+    void testXShellBuilderNullAsRegExToKill(JenkinsRule j) throws Exception {
 
         FreeStyleProject project = j.createFreeStyleProject();
 
@@ -51,10 +39,9 @@ public class UpgradeTest extends HudsonTestCase {
                 .add(new XShellBuilder("echo " + arguments, "", execFromWorkingDir, regexToKill, timeAllocated));
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        String s = FileUtils.readFileToString(build.getLogFile());
 
-        assertThat(s, not(containsString("java.lang.NullPointerException")));
-        assertThat(s, containsString(arguments));
-        assertThat(s, containsString("SUCCESS"));
+        j.assertLogNotContains("java.lang.NullPointerException", build);
+        j.assertLogContains(arguments, build);
+        j.assertLogContains("SUCCESS", build);
     }
 }
