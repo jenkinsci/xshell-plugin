@@ -1,31 +1,31 @@
 package hudson.plugins.xshell;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * @author marco.ambu
  */
-public class XShellTest {
-    @Rule
-    public JenkinsRule jenkinsRule = new JenkinsRule();
+@WithJenkins
+class XShellTest {
 
     @Test
-    public void testConvertSeparatorUnixToWin() throws Exception {
+    void testConvertSeparatorUnixToWin(JenkinsRule jenkinsRule) {
         String s = XShellBuilder.convertSeparator("mycmd a/b", XShellBuilder.WINDOWS_SEP);
         assertEquals("mycmd a\\b", s);
     }
 
     @Test
-    public void testConvertSeparatorWinToUnix() throws Exception {
+    void testConvertSeparatorWinToUnix(JenkinsRule jenkinsRule) {
         String s = XShellBuilder.convertSeparator("mycmd a\\b", XShellBuilder.UNIX_SEP);
         assertEquals("mycmd a/b", s);
     }
 
     @Test
-    public void testEnvVarUnixToWin() throws Exception {
+    void testEnvVarUnixToWin(JenkinsRule jenkinsRule) {
         String s = XShellBuilder.convertEnvVarsToWindows("mycmd $VAR");
         assertEquals("mycmd %VAR%", s);
 
@@ -37,7 +37,7 @@ public class XShellTest {
     }
 
     @Test
-    public void testEnvVarUnixToUnix() throws Exception {
+    void testEnvVarUnixToUnix(JenkinsRule jenkinsRule) {
         String s = XShellBuilder.convertEnvVarsToUnix("mycmd $VAR");
         assertEquals("mycmd $VAR", s);
 
@@ -49,7 +49,7 @@ public class XShellTest {
     }
 
     @Test
-    public void testEnvVarWinToUnix() throws Exception {
+    void testEnvVarWinToUnix(JenkinsRule jenkinsRule) {
         String s = XShellBuilder.convertEnvVarsToUnix("mycmd %VAR%");
         assertEquals("mycmd $VAR", s);
 
@@ -61,7 +61,7 @@ public class XShellTest {
     }
 
     @Test
-    public void testEnvVarWinToWin() throws Exception {
+    void testEnvVarWinToWin(JenkinsRule jenkinsRule) {
         String s = XShellBuilder.convertEnvVarsToWindows("mycmd %VAR%");
         assertEquals("mycmd %VAR%", s);
 

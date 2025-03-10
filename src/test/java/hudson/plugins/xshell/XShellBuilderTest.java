@@ -3,7 +3,7 @@ package hudson.plugins.xshell;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -12,29 +12,24 @@ import hudson.model.FreeStyleProject;
 import hudson.model.StreamBuildListener;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Test the XShellBuilder class. Avoid null pointer exceptions and more.
  *
  * @author Mark Waite
  */
-public class XShellBuilderTest {
+@WithJenkins
+class XShellBuilderTest {
 
-    @ClassRule
-    public static JenkinsRule rule = new JenkinsRule();
-
-    @Rule
-    public TestName testName = new TestName();
-
-    public XShellBuilderTest() {}
+    private static JenkinsRule rule;
 
     private String commandLine;
     private String workingDir;
@@ -43,11 +38,17 @@ public class XShellBuilderTest {
     private String timeAllocated;
     private XShellBuilder builder;
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
-    @Before
-    public void setUp() {
-        commandLine = "echo Hello \\n; echo from " + testName.getMethodName();
+    @BeforeAll
+    static void setUp(JenkinsRule r) {
+        rule = r;
+    }
+
+    @BeforeEach
+    void setUp(TestInfo info) {
+        commandLine = "echo Hello \\n; echo from "
+                + info.getTestMethod().orElseThrow().getName();
         workingDir = ".";
         executeFromWorkingDir = false;
         regexToKill = random.nextBoolean() ? null : "xyzzy.*grue";
@@ -56,74 +57,77 @@ public class XShellBuilderTest {
     }
 
     @Test
-    public void testGetCommandLine() {
+    void testGetCommandLine() {
         assertThat(builder.getCommandLine(), is(commandLine));
     }
 
     @Test
-    public void testGetWorkingDir() {
+    void testGetWorkingDir() {
         assertThat(builder.getWorkingDir(), is(workingDir));
     }
 
     @Test
-    public void testGetWorkingDirNull() {
+    void testGetWorkingDirNull() {
         workingDir = null;
         builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
         assertThat(builder.getWorkingDir(), is(workingDir));
     }
 
     @Test
-    public void testGetExecuteFromWorkingDir() {
+    void testGetExecuteFromWorkingDir() {
         assertThat(builder.getExecuteFromWorkingDir(), is(executeFromWorkingDir));
     }
 
     @Test
-    public void testGetRegexToKill() {
+    void testGetRegexToKill() {
         String expected = regexToKill == null ? "" : regexToKill;
         assertThat(builder.getRegexToKill(), is(expected));
     }
 
     @Test
-    public void testGetTimeAllocated() {
+    void testGetTimeAllocated() {
         assertThat(builder.getTimeAllocated(), is(timeAllocated));
     }
 
     @Test
-    public void testPerform() throws Exception {
-        FreeStyleProject project = rule.createFreeStyleProject("job-" + testName.getMethodName());
+    void testPerform(TestInfo info) throws Exception {
+        FreeStyleProject project = rule.createFreeStyleProject(
+                "job-" + info.getTestMethod().orElseThrow().getName());
         Launcher launcher = rule.createLocalLauncher();
         OutputStream outputStream = new ByteArrayOutputStream();
-        BuildListener listener = new StreamBuildListener(outputStream, Charset.forName("UTF-8"));
+        BuildListener listener = new StreamBuildListener(outputStream, StandardCharsets.UTF_8);
         AbstractBuild build = project.scheduleBuild2(0).get();
-        assertTrue("Failed in perform", builder.perform(build, launcher, listener));
+        assertTrue(builder.perform(build, launcher, listener), "Failed in perform");
     }
 
     @Test
-    public void testPerformNullWorkingDir() throws Exception {
-        FreeStyleProject project = rule.createFreeStyleProject("job-" + testName.getMethodName());
+    void testPerformNullWorkingDir(TestInfo info) throws Exception {
+        FreeStyleProject project = rule.createFreeStyleProject(
+                "job-" + info.getTestMethod().orElseThrow().getName());
         Launcher launcher = rule.createLocalLauncher();
         OutputStream outputStream = new ByteArrayOutputStream();
-        BuildListener listener = new StreamBuildListener(outputStream, Charset.forName("UTF-8"));
+        BuildListener listener = new StreamBuildListener(outputStream, StandardCharsets.UTF_8);
         AbstractBuild build = project.scheduleBuild2(0).get();
         workingDir = null;
         builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
-        assertTrue("Failed in perform", builder.perform(build, launcher, listener));
+        assertTrue(builder.perform(build, launcher, listener), "Failed in perform");
     }
 
     @Test
-    public void testPerformAbsoluteWorkingDir() throws Exception {
-        FreeStyleProject project = rule.createFreeStyleProject("job-" + testName.getMethodName());
+    void testPerformAbsoluteWorkingDir(TestInfo info) throws Exception {
+        FreeStyleProject project = rule.createFreeStyleProject(
+                "job-" + info.getTestMethod().orElseThrow().getName());
         Launcher launcher = rule.createLocalLauncher();
         OutputStream outputStream = new ByteArrayOutputStream();
-        BuildListener listener = new StreamBuildListener(outputStream, Charset.forName("UTF-8"));
+        BuildListener listener = new StreamBuildListener(outputStream, StandardCharsets.UTF_8);
         AbstractBuild build = project.scheduleBuild2(0).get();
         workingDir = System.getProperty("java.io.tmpdir");
         builder = new XShellBuilder(commandLine, workingDir, executeFromWorkingDir, regexToKill, timeAllocated);
-        assertTrue("Failed in perform", builder.perform(build, launcher, listener));
+        assertTrue(builder.perform(build, launcher, listener), "Failed in perform");
     }
 
     @Test
-    public void testConvertSeparator() {
+    void testConvertSeparator() {
         String newSeparator = "/";
         assertThat(
                 XShellBuilder.convertSeparator(commandLine, newSeparator),
@@ -135,18 +139,18 @@ public class XShellBuilderTest {
     private final String UNIX_ENV_VAR_BRACED = "${PATH}";
 
     @Test
-    public void testConvertEnvVarsToUnix() {
+    void testConvertEnvVarsToUnix() {
         commandLine = "set PATH=C:\\;";
         assertThat(XShellBuilder.convertEnvVarsToUnix(commandLine + WINDOWS_ENV_VAR), is(commandLine + UNIX_ENV_VAR));
     }
 
     @Test
-    public void testConvertEnvVarsToUnixNullArgument() {
+    void testConvertEnvVarsToUnixNullArgument() {
         assertThat(XShellBuilder.convertEnvVarsToUnix(null), is(nullValue()));
     }
 
     @Test
-    public void testConvertEnvVarsToWindows() {
+    void testConvertEnvVarsToWindows() {
         commandLine = "PATH=/opt/jdk17/bin:";
         assertThat(
                 XShellBuilder.convertEnvVarsToWindows(commandLine + UNIX_ENV_VAR),
@@ -154,12 +158,12 @@ public class XShellBuilderTest {
     }
 
     @Test
-    public void testConvertEnvVarsToWindowsNullArgument() {
+    void testConvertEnvVarsToWindowsNullArgument() {
         assertThat(XShellBuilder.convertEnvVarsToWindows(null), is(nullValue()));
     }
 
     @Test
-    public void testConvertEnvVarsToWindowsBraced() {
+    void testConvertEnvVarsToWindowsBraced() {
         // Note that there is no conversion of braced env vars
         commandLine = "PATH=/opt/jdk17/bin:";
         assertThat(
