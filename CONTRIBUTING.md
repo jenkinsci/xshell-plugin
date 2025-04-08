@@ -1,5 +1,7 @@
 # Contributing to the plugin
 
+This is branch-002
+
 Plugin source code is hosted on [GitHub](https://github.com/jenkinsci/apache-httpcomponents-client-4-api-plugin).
 New feature proposals and bug fix proposals should be submitted as
 [GitHub pull requests](https://help.github.com/articles/creating-a-pull-request).
